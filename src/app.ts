@@ -5,7 +5,9 @@ import notFound from "./app/middileWare/notFound";
 import globalErrorhandler from "./app/middileWare/globalErrorHandler";
 
 const app = express();
-app.use(cors());
+
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
 app.use(express.json());
 
 // application route

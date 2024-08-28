@@ -14,7 +14,7 @@ npm install
 
 * PORT=5000
 
-* DATABASE_URL=mongodb+srv://admin_ui:fSzBOYm3dsCqfsPt@cluster0.nrfwsc1.mongodb.net/roomBookings?retryWrites=true&w=majority&appName=cluster0
+* DATABASE_URL=Your mongodbUri Link
 
 * BCRYPT_SALTROUND=12
 
