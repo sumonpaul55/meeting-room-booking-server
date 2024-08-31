@@ -14,6 +14,7 @@ const signUpIntoDb = async (payLoad: TUser) => {
     throw new AppError(httpStatus.ALREADY_REPORTED, "User already Exist. Please login");
   }
   const result = await User.create(payLoad);
+
   return result;
 };
 const loginDb = async (payLoad: TLogin) => {
@@ -23,6 +24,7 @@ const loginDb = async (payLoad: TLogin) => {
     throw new AppError(httpStatus.NOT_FOUND, `User not found with this ${payLoad.email}`);
   }
   const tokenPayload: tokenPayload = {
+    name: existingUser?.name,
     email: existingUser?.email,
     role: existingUser?.role,
   };

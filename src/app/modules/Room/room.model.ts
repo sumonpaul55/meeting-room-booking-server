@@ -8,6 +8,7 @@ const roomsModelSchema = new Schema<TRooms>({
   capacity: { type: Number, required: true },
   pricePerSlot: { type: Number, required: true },
   amenities: [{ type: String }],
+  roomImg: [{ type: String, default: "" }],
   isDeleted: { type: Boolean, default: false },
 });
 
