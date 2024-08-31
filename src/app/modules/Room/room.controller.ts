@@ -15,7 +15,7 @@ const createRooms = catchAsync(async (req, res) => {
 // get all rooms
 
 const getAllRooms = catchAsync(async (req, res) => {
-  const result = await roomsServices.getAllRoomsFromDb();
+  const result = await roomsServices.getAllRoomsFromDb(req.query);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

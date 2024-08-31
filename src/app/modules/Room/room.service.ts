@@ -2,15 +2,19 @@ import { isAborted } from "zod";
 import { TRooms } from "./room.interface";
 import { Rooms } from "./room.model";
 import handleEmptyData from "../../utils/handleEmptyData";
+import QueryBuilder from "../../builder/queryBuilder";
+import { query } from "express";
+import { searchableField } from "./searchAbleField";
 
 const creatRooms = async (payLoad: TRooms) => {
   const result = await Rooms.create(payLoad);
   return result;
 };
 // get a rooms
-const getAllRoomsFromDb = async () => {
-  const result = await Rooms.find();
-  return handleEmptyData(result);
+const getAllRoomsFromDb = async (query: Record<string, unknown>) => {
+  // const result = await Rooms.find();
+  const roomquery = new QueryBuilder(Rooms.find(), query).search(searchableField).filter().sort().paginate();
+  // return handleEmptyData(result);
 };
 // get a rooms
 const getAroomsFromDb = async (id: string) => {
