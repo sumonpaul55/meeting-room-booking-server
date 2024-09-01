@@ -19,24 +19,29 @@ const signUpIntoDb = async (payLoad: TUser) => {
 };
 const loginDb = async (payLoad: TLogin) => {
   // check user exist
-  const existingUser: AnyExpression = await User.findOne({ email: payLoad.email });
+  const existingUser = await User.findOne({ email: payLoad.email });
+
   if (!existingUser) {
     throw new AppError(httpStatus.NOT_FOUND, `User not found with this ${payLoad.email}`);
   }
 
+  console.log(existingUser);
+
   const matched = await User.isPasswordMatched(payLoad.password, existingUser?.password);
+  console.log(matched);
   if (!matched) {
     throw new AppError(httpStatus.FORBIDDEN, "Password do not matched");
   }
+
   const tokenPayload: tokenPayload = {
     name: existingUser?.name,
     email: existingUser?.email,
     role: existingUser?.role,
   };
-  const token = createToken(tokenPayload, config.Access_Token_Secret as string, config.JWT_ACCESS_EXPIRE_IN as string);
-  const tokenWithBearer = token;
 
-  const result = { existingUser, token: tokenWithBearer };
+  const token = createToken(tokenPayload, config.Access_Token_Secret as string, config.JWT_ACCESS_EXPIRE_IN as string);
+
+  const result = { existingUser, token };
   return result;
 };
 export const authServices = {

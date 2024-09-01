@@ -12,7 +12,14 @@ const creatRooms = async (payLoad: TRooms) => {
 // get a rooms
 const getAllRoomsFromDb = async (query: Record<string, unknown>) => {
   // const result = await Rooms.find();
-  const roomquery = new QueryBuilder(Rooms.find({ isDeleted: false }), query).search(searchableField).filter().sort().limit().paginate();
+  const roomquery = new QueryBuilder(Rooms.find({ isDeleted: false }), query)
+    .search(searchableField)
+    .filter()
+    .sort()
+    .limit()
+    .paginate()
+    .range()
+    .capcity();
   const result = await roomquery.modelQuery;
   return result;
 };

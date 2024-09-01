@@ -6,7 +6,7 @@ import config from "../../config";
 const UserModelSchema = new Schema<TUser, UserModel>({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, select: 0 },
+  password: { type: String },
   phone: { type: String, required: true },
   role: {
     type: String,
@@ -23,13 +23,14 @@ UserModelSchema.pre("save", async function (next) {
 });
 
 // doc for post middle ware hide the password
-UserModelSchema.post("save", function (doc, next) {
-  doc.password = "";
-  next();
-});
+// UserModelSchema.post("save", function (doc, next) {
+//   doc.password = "";
+//   next();
+// });
 
 // check password is matched
 UserModelSchema.statics.isPasswordMatched = async function (plaingTextPassword: string, hashPassword: string) {
+  console.log(hashPassword);
   return await bcrypt.compare(plaingTextPassword, hashPassword);
 };
 

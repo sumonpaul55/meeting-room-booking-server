@@ -9,10 +9,16 @@ class QueryBuilder<T> {
   }
   // search method
   search(searchAbleField: string[]) {
-    const searchTerm = this.query?.searchTerm;
-    if (this?.query?.searchTerm) {
+    const search = this.query?.search;
+    if (this?.query?.search) {
       this.modelQuery = this.modelQuery.find({
-        $or: searchAbleField.map((fields) => ({ [fields]: { $regex: searchTerm, $options: "i" } } as FilterQuery<T>)),
+        $or: [
+          // Add search conditions for the specified fields
+          ...searchAbleField.map((fields) => ({ [fields]: { $regex: search, $options: "i" } } as FilterQuery<T>)),
+
+          // Add search condition for the 'amenities' array field
+          { amenities: { $elemMatch: { $regex: search, $options: "i" } } },
+        ],
       });
     }
     return this;
@@ -20,9 +26,32 @@ class QueryBuilder<T> {
   // filtering
   filter() {
     const queryObj = { ...this.query }; //copy of all queries
-    const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
+    const excludeFields = ["search", "sort", "limit", "range", "page", "fields"];
     excludeFields.forEach((el) => delete queryObj[el]);
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+    return this;
+  }
+  // range
+  range() {
+    const range = this.query.range;
+    if (range) {
+      const newRange = (range as string).split("-");
+      const lowestPrice = Number(newRange[0]);
+      const hiestprice = Number(newRange[1]);
+      // let rangevalue = newRange.map((range) => new RegExp(`^${range}$`, "i"));
+      this.modelQuery = this.modelQuery.find({
+        pricePerSlot: { $gte: lowestPrice, $lte: hiestprice },
+      });
+    }
+    return this;
+  }
+  capcity() {
+    const capacity = this?.query?.capacity;
+    if (capacity) {
+      this.modelQuery = this.modelQuery.find({
+        capacity: capacity,
+      });
+    }
     return this;
   }
   //   sort
@@ -31,6 +60,7 @@ class QueryBuilder<T> {
     this.modelQuery = this.modelQuery.sort(sort as string);
     return this;
   }
+
   limit() {
     const limit = Number(this?.query?.limit || 10);
     this.modelQuery = this.modelQuery.find().limit(limit as number);
