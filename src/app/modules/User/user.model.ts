@@ -21,4 +21,16 @@ UserModelSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, Number(config.BCRYPT_SALTROUND));
   next();
 });
+
+// doc for post middle ware hide the password
+UserModelSchema.post("save", function (doc, next) {
+  doc.password = "";
+  next();
+});
+
+// check password is matched using static method
+UserModelSchema.static.isPasswordMatched = async function (plainTextPass: string, hashPassword: string) {
+  return await bcrypt.compare(plainTextPass, hashPassword);
+};
+
 export const User = model<TUser>("User", UserModelSchema);

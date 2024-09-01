@@ -5,7 +5,6 @@ import { TSlot } from "./slot.interface";
 import { Slot } from "./slot.model";
 import { createSlot } from "./slot.utils";
 import catchAsync from "../../utils/catchAsync";
-import handleEmptyData from "../../utils/handleEmptyData";
 
 const addSlotDb = async (payload: TSlot) => {
   // check slot block or not
@@ -29,10 +28,10 @@ const getAllSlotDB = async (payload: any) => {
       $or: [{ date: payload.date }, { room: payload.roomId }],
       isBooked: false,
     });
-    return handleEmptyData(result);
+    return result;
   } else {
     const result = await Slot.find({ isBooked: false });
-    return handleEmptyData(result);
+    return result;
   }
 };
 

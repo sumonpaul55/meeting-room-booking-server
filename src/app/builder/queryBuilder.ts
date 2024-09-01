@@ -31,6 +31,11 @@ class QueryBuilder<T> {
     this.modelQuery = this.modelQuery.sort(sort as string);
     return this;
   }
+  limit() {
+    const limit = Number(this?.query?.limit || 10);
+    this.modelQuery = this.modelQuery.find().limit(limit as number);
+    return this;
+  }
   //   pagination
   paginate() {
     const page = Number(this?.query?.page) || 1;

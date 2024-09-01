@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export type TUserRole = "admin" | "user";
 
 export type TUser = {
@@ -9,3 +11,7 @@ export type TUser = {
   role: TUserRole;
   isDeleted: boolean;
 };
+
+export interface UserModelSchema extends Model<TUser> {
+  isPasswordMatched(plainTextPass: string, hashPassword: string): Promise<TUser>;
+}
