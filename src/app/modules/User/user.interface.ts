@@ -12,6 +12,6 @@ export type TUser = {
   isDeleted: boolean;
 };
 
-export interface UserModelSchema extends Model<TUser> {
-  isPasswordMatched(plainTextPass: string, hashPassword: string): Promise<TUser>;
+export interface UserModel extends Model<TUser> {
+  isPasswordMatched(plaingTextPassword: string, hashPassword: string): Promise<TUser>;
 }
