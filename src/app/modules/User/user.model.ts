@@ -30,7 +30,6 @@ UserModelSchema.pre("save", async function (next) {
 
 // check password is matched
 UserModelSchema.statics.isPasswordMatched = async function (plaingTextPassword: string, hashPassword: string) {
-  console.log(hashPassword);
   return await bcrypt.compare(plaingTextPassword, hashPassword);
 };
 

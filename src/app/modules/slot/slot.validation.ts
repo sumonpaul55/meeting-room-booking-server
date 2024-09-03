@@ -26,6 +26,32 @@ const addSlotValidationSchema = z.object({
     ),
 });
 
+const updateValidationSchema = z.object({
+  body: z
+    .object({
+      room: z.string({ required_error: "room id needed" }).optional(),
+      date: z.string({ required_error: "slot date is required" }).optional(),
+      startTime: timeStringSchema.optional(),
+      endTime: timeStringSchema.optional(),
+      isBooked: z.boolean().optional(),
+    })
+    .refine(
+      (body) => {
+        if (body.startTime && body.endTime) {
+          const start = new Date(`1970-01-01T${body.startTime}:00`);
+          const end = new Date(`1970-01-01T${body.endTime}:00`);
+          return start < end;
+        }
+        return true;
+      },
+      {
+        message: "Start time shouldn't be before end time",
+        path: ["endTime"], // Specify where the error message should appear
+      }
+    ),
+});
+
 export const slotValidation = {
   addSlotValidationSchema,
+  updateValidationSchema,
 };

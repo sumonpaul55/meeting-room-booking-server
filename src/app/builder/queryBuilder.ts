@@ -26,7 +26,7 @@ class QueryBuilder<T> {
   // filtering
   filter() {
     const queryObj = { ...this.query }; //copy of all queries
-    const excludeFields = ["search", "sort", "limit", "range", "page", "fields"];
+    const excludeFields = ["search", "sort", "limit", "range", "page", "fields", "capacity"];
     excludeFields.forEach((el) => delete queryObj[el]);
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
     return this;
@@ -48,8 +48,12 @@ class QueryBuilder<T> {
   capcity() {
     const capacity = this?.query?.capacity;
     if (capacity) {
+      const newCapacity = (capacity as string).split("-");
+      const lowestPrice = Number(newCapacity[0]);
+      const hiestprice = Number(newCapacity[1]);
+      // let rangevalue = newRange.map((range) => new RegExp(`^${range}$`, "i"));
       this.modelQuery = this.modelQuery.find({
-        capacity: capacity,
+        capacity: { $gte: lowestPrice, $lte: hiestprice },
       });
     }
     return this;
@@ -62,17 +66,30 @@ class QueryBuilder<T> {
   }
 
   limit() {
-    const limit = Number(this?.query?.limit || 10);
+    const limit = Number(this?.query?.limit || 6);
     this.modelQuery = this.modelQuery.find().limit(limit as number);
     return this;
   }
   //   pagination
   paginate() {
     const page = Number(this?.query?.page) || 1;
-    const limit = Number(this?.query?.limit) || 10;
+    const limit = Number(this?.query?.limit) || 6;
     const skip = (page - 1) * limit;
     this.modelQuery = this.modelQuery.skip(skip).limit(limit);
     return this;
+  }
+  async countTotal() {
+    const totalQuery = this.modelQuery.getFilter();
+    const total = await this.modelQuery.model.countDocuments(totalQuery);
+    const page = Number(this?.query?.page) || 1;
+    const limit = Number(this?.query?.limit) || 6;
+    const totalPage = Math.ceil(total / limit);
+    return {
+      page,
+      limit,
+      total,
+      totalPage,
+    };
   }
 }
 

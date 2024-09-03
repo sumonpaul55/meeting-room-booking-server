@@ -36,7 +36,6 @@ const updateRoomsIntoDb = (id, payLoad) => __awaiter(void 0, void 0, void 0, fun
         new: true,
         runValidators: true,
     });
-    console.log(result);
     return result;
 });
 const deleteRoomFromDb = (payload) => __awaiter(void 0, void 0, void 0, function* () {

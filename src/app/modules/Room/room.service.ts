@@ -21,7 +21,9 @@ const getAllRoomsFromDb = async (query: Record<string, unknown>) => {
     .range()
     .capcity();
   const result = await roomquery.modelQuery;
-  return result;
+  const meta = await roomquery.countTotal();
+  return { result, meta };
+  // return result;
 };
 // get a rooms
 const getAroomsFromDb = async (id: string) => {
@@ -35,7 +37,6 @@ const updateRoomsIntoDb = async (id: string, payLoad: TRooms) => {
     new: true,
     runValidators: true,
   });
-  console.log(result);
   return result;
 };
 const deleteRoomFromDb = async (payload: string) => {

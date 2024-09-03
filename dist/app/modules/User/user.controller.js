@@ -17,7 +17,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const user_service_1 = require("./user.service");
 const getAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.user);
+
     const result = yield user_service_1.userServices.getAllUsersFromDb();
     try {
         res.status(http_status_1.default.OK).json({

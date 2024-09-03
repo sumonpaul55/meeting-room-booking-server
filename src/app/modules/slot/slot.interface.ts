@@ -7,7 +7,7 @@ export type TSlot = {
   room: mongoose.Types.ObjectId;
   startTime: string;
   endTime: string;
-  isBooked: boolean;
+  isBooked?: boolean;
 };
 
 // type TSlots = z.infer<typeof slotValidation.addSlotValidationSchema>;

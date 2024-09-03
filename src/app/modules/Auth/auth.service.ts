@@ -25,10 +25,8 @@ const loginDb = async (payLoad: TLogin) => {
     throw new AppError(httpStatus.NOT_FOUND, `User not found with this ${payLoad.email}`);
   }
 
-  console.log(existingUser);
-
   const matched = await User.isPasswordMatched(payLoad.password, existingUser?.password);
-  console.log(matched);
+
   if (!matched) {
     throw new AppError(httpStatus.FORBIDDEN, "Password do not matched");
   }
