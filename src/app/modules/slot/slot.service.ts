@@ -22,11 +22,10 @@ const getAllSlotDB = async (payload: any) => {
   if (Object?.values(payload)?.length) {
     const result = await Slot.find({
       $or: [{ date: payload.date }, { room: payload.roomId }],
-      isBooked: false,
     }).populate("room");
     return result;
   } else {
-    const result = await Slot.find({ isBooked: false }).populate("room");
+    const result = await Slot.find().populate("room");
     return result;
   }
 };
@@ -42,26 +41,23 @@ const deleteSlotDb = async (payload: string) => {
 };
 // update slot
 const updateSlots = async (id: string, payload: TSlot) => {
-  // check check room available or not
-  const isRoomAvailable = await Rooms.findById(payload.room);
-  if (!isRoomAvailable) {
-    throw new AppError(httpStatus.NOT_FOUND, "Room not found with this " + payload.room);
+  // check updateable slot exist
+  const isExistRequestedSlot = await Slot.findById(id);
+  if (!isExistRequestedSlot) {
+    throw new AppError(httpStatus.NOT_FOUND, "This Slot is not Exist");
   }
-  // check the slot shedule is available
-  const isSlotAvailabe = await Slot.findOne({
-    room: payload.room,
-    date: payload.date,
-    startTime: payload.startTime,
-    endTime: payload.endTime,
-    isBooked: false,
-  });
-  if (isSlotAvailabe) {
-    throw new AppError(httpStatus.CONFLICT, "Slot Time is not available");
+  // empty array for creatd slots
+  const comingSlots = [];
+  if (payload.startTime && payload.endTime) {
+    comingSlots.push({ startTime: payload.startTime, endTime: payload.endTime });
+    // check the slot shedule is available
+    const slotNotexist = await checkSlotExist(payload.room, payload.date, comingSlots);
+    if (slotNotexist) {
+      throw new AppError(httpStatus.CONFLICT, "Slot Time is not available");
+    }
   }
-  // check slot is exist
-  const isexist = await Slot.findById(id);
-
-  // return result;
+  const result = await Slot.findByIdAndUpdate(id, payload, { new: true });
+  return result;
 };
 
 export const slotService = {
