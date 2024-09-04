@@ -42,6 +42,7 @@ const loginDb = async (payLoad: TLogin) => {
   const result = { existingUser, token };
   return result;
 };
+
 export const authServices = {
   signUpIntoDb,
   loginDb,
