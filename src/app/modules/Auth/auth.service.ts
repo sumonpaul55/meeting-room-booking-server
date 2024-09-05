@@ -42,8 +42,20 @@ const loginDb = async (payLoad: TLogin) => {
   const result = { existingUser, token };
   return result;
 };
-
+const makeAdminDb = async (id: string) => {
+  const userExist = await User.findOne({ _id: id });
+  if (!userExist) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found or role not matched");
+  }
+  if (userExist?.role === "user") {
+    return await User.findByIdAndUpdate(id, { role: "admin" }, { new: true, runValidators: true });
+  }
+  if (userExist?.role === "admin") {
+    return await User.findByIdAndUpdate(id, { role: "user" }, { new: true, runValidators: true });
+  }
+};
 export const authServices = {
   signUpIntoDb,
   loginDb,
+  makeAdminDb,
 };

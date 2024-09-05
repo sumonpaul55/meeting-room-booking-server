@@ -15,21 +15,26 @@ const signUp = catchAsync(async (req, res) => {
 });
 // login
 const login = catchAsync(async (req, res) => {
-  try {
-    const result = await authServices.loginDb(req.body);
-    res.status(httpStatus.OK).json({
-      success: true,
-      statusCode: httpStatus.OK,
-      message: "User logged in successfully",
-      token: result?.token,
-      data: result?.existingUser,
-    });
-  } catch (error: any) {
-    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, error);
-  }
+  const result = await authServices.loginDb(req.body);
+  res.status(httpStatus.OK).json({
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User logged in successfully",
+    token: result?.token,
+    data: result?.existingUser,
+  });
 });
-
+const makeAdmin = catchAsync(async (req, res) => {
+  const result = await authServices.makeAdminDb(req.params.id);
+  res.status(httpStatus.OK).json({
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User Successfully Promototed to admin",
+    data: result,
+  });
+});
 export const authController = {
   signUp,
   login,
+  makeAdmin,
 };
