@@ -22,10 +22,12 @@ const getAllSlotDB = async (payload: any) => {
   if (Object?.values(payload)?.length) {
     const result = await Slot.find({
       $or: [{ date: payload.date }, { room: payload.roomId }],
-    }).populate("room");
+    })
+      .populate("room")
+      .sort(payload.sort);
     return result;
   } else {
-    const result = await Slot.find().populate("room");
+    const result = await Slot.find().populate("room").sort("room");
     return result;
   }
 };

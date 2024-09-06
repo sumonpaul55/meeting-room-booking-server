@@ -42,6 +42,9 @@ const loginDb = async (payLoad: TLogin) => {
   const result = { existingUser, token };
   return result;
 };
+const getOneUserDb = async (email: any) => {
+  return await User.findOne(email);
+};
 const makeAdminDb = async (id: string) => {
   const userExist = await User.findOne({ _id: id });
   if (!userExist) {
@@ -54,8 +57,10 @@ const makeAdminDb = async (id: string) => {
     return await User.findByIdAndUpdate(id, { role: "user" }, { new: true, runValidators: true });
   }
 };
+
 export const authServices = {
   signUpIntoDb,
   loginDb,
   makeAdminDb,
+  getOneUserDb,
 };

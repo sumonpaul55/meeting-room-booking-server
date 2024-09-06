@@ -5,7 +5,6 @@ import { TBooking } from "./booking.interface";
 import { Bookings } from "./booking.model";
 import { Slot } from "../slot/slot.model";
 import { User } from "../User/user.model";
-import handleEmptyData from "../../utils/handleEmptyData";
 
 const addBookingDb = async (payload: TBooking) => {
   // check slot by date and room available or not
@@ -34,14 +33,14 @@ const addBookingDb = async (payload: TBooking) => {
 };
 const getAllBookingFromDb = async () => {
   const result = await Bookings.find({ isDeleted: false }).populate("room").populate("slots").populate("user");
-  return handleEmptyData(result);
+  return result;
 };
 const getMyBookings = async (payload: string) => {
   // get the user First
   const userData = await User.findOne({ email: payload, isDeleted: false });
   const userId = userData?._id;
   const result = await Bookings.findOne({ user: userId }).populate("room").populate("slots").populate("user");
-  return handleEmptyData(result);
+  return result;
 };
 const updateBookingDb = async (id: string, payload: TBooking) => {
   await Bookings.findByIdAndUpdate(id, payload, { new: true });

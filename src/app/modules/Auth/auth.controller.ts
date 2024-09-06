@@ -24,6 +24,15 @@ const login = catchAsync(async (req, res) => {
     data: result?.existingUser,
   });
 });
+const getOneUser = catchAsync(async (req, res) => {
+  const result = await authServices.getOneUserDb(req.query);
+  res.status(httpStatus.OK).json({
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User got successfully",
+    data: result,
+  });
+});
 const makeAdmin = catchAsync(async (req, res) => {
   const result = await authServices.makeAdminDb(req.params.id);
   res.status(httpStatus.OK).json({
@@ -37,4 +46,5 @@ export const authController = {
   signUp,
   login,
   makeAdmin,
+  getOneUser,
 };

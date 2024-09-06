@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.post("/signup", validateRequest(userValidations.createUserValidationSchma), authController.signUp);
 
+router.get("/users", authController.getOneUser);
+
 router.post("/login", validateRequest(authValidation.loginValidationSchema), authController.login);
 
 router.put("/status/:id", authGuared(USER_ROLE.admin), authController.makeAdmin);
