@@ -6,7 +6,7 @@ const bookingModelSchema = new Schema<TBooking>({
     {
       _id: { type: Schema.Types.ObjectId, required: true, ref: "Rooms" }, // Required ObjectId referencing Rooms
       date: { type: String, required: true }, // Date as string
-      slots: { type: [String], required: true }, // Array of strings for slots
+      slots: { type: String, required: true }, // Array of strings for slots
     },
   ],
   user: { type: Schema.Types.ObjectId, required: true, ref: "User" }, // Required ObjectId referencing User

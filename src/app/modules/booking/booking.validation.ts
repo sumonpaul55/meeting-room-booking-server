@@ -5,17 +5,17 @@ const bookingValidationSchema = z.object({
   body: z.object({
     room: z.array(
       z.object({
-        _id: z.instanceof(mongoose.Types.ObjectId), // Validates ObjectId
+        _id: z.string(), // Validates ObjectId
         date: z.string(), // Basic string validation for date
-        slots: z.array(z.string()), // Array of strings for slots
+        slots: z.string(), // Array of strings for slots
       })
     ),
-    user: z.instanceof(mongoose.Types.ObjectId), // ObjectId validation
+    user: z.string({ required_error: "Need an User" }), // ObjectId validation
     phone: z.string(), // Basic string validation for phone number
     paymentId: z.string(), // Basic string validation for payment ID
     email: z.string().email("Invalid email address"), // Email validation
-    paymentTime: z.string(), // Basic string validation for payment time
-    totalAmount: z.number().optional(), // Optional number
+    paymentTime: z.number(), // Basic string validation for payment time
+    totalAmount: z.number(), // Optional number
     isConfirmed: z.enum(["confirmed", "unconfirmed", "canceled"]).optional(),
   }),
 });
@@ -25,13 +25,13 @@ const updateBookingValidationSchema = z.object({
     room: z
       .array(
         z.object({
-          _id: z.instanceof(mongoose.Types.ObjectId).optional(), // Optional ObjectId
+          _id: z.string().optional(), // Optional ObjectId
           date: z.string().optional(), // Optional string for date
           slots: z.array(z.string()).optional(), // Optional array of strings for slots
         })
       )
       .optional(),
-    user: z.instanceof(mongoose.Types.ObjectId).optional(), // Optional ObjectId for user
+    user: z.string().optional(), // Optional ObjectId for user
     phone: z.string().optional(), // Optional string for phone number
     paymentId: z.string().optional(), // Optional string for payment ID
     email: z.string().email("Invalid email address").optional(), // Optional email validation
