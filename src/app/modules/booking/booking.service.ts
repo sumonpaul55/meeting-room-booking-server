@@ -24,29 +24,26 @@ const confiremPayment = async (payload: { paymentId: string; total: number }) =>
 };
 
 const addBookingDb = async (payload: TBooking) => {
+  console.log(payload);
   // check slot by date and room available or not
-  const isExistSlot = await Slot.find({
-    _id: payload.slots,
-    date: payload.date,
-    isBooked: false,
-  });
+  const isExistSlot = await Slot.find({});
 
   if (!isExistSlot?.length) {
     throw new AppError(httpStatus.NOT_FOUND, "Slot is not available");
   }
-  // get rooms
-  const targetedRooms = await Rooms.findById(payload.room);
-  if (!targetedRooms) {
-    throw new AppError(httpStatus.NOT_FOUND, "Room not Found");
-  }
-  // payload.totalAmount = targetedRooms?.pricePerSlot * payload.slots.length;
-  const result = await Bookings.create(payload);
-  const newBookingId = result._id;
-  // change the isBooked status
-  await Slot.updateMany({ _id: payload.slots }, { isBooked: true }, { new: true });
+  // // get rooms
+  // const targetedRooms = await Rooms.findById(payload.room);
+  // if (!targetedRooms) {
+  //   throw new AppError(httpStatus.NOT_FOUND, "Room not Found");
+  // }
+  // // payload.totalAmount = targetedRooms?.pricePerSlot * payload.slots.length;
+  // const result = await Bookings.create(payload);
+  // const newBookingId = result._id;
+  // // change the isBooked status
+  // await Slot.updateMany({ _id: payload.slots }, { isBooked: true }, { new: true });
 
-  const lastBookinged = await Bookings.findById(newBookingId).populate("room").populate("slots").populate("user");
-  return lastBookinged;
+  // const lastBookinged = await Bookings.findById(newBookingId).populate("room").populate("slots").populate("user");
+  // return lastBookinged;
 };
 const getAllBookingFromDb = async () => {
   const result = await Bookings.find({ isDeleted: false }).populate("room").populate("slots").populate("user");

@@ -3,12 +3,12 @@ import { bookingValidation } from "./booking.validation";
 import mongoose from "mongoose";
 
 export type TBooking = {
-  date: Date;
-  room: mongoose.Types.ObjectId;
-  slots: mongoose.Types.ObjectId[];
+  room: { _id: mongoose.Types.ObjectId; date: string; slots: string[] }[];
   user: mongoose.Types.ObjectId;
-  phone: number;
-  address: string;
+  phone: string;
+  paymentId: string;
+  email: string;
+  paymentTime: string;
   totalAmount?: number;
   isConfirmed?: "confirmed" | "unconfirmed" | "canceled";
   isDeleted?: boolean;
