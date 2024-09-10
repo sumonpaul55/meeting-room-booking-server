@@ -8,7 +8,7 @@ const addBooking = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Booking created successfully",
+    message: "Your Booking has been received.",
     data: result,
   });
 });
@@ -48,10 +48,21 @@ const deleteBooking = catchAsync(async (req, res) => {
     data: result,
   });
 });
+// confirm payment
+const confirmPayment = catchAsync(async (req, res) => {
+  const reslut = await bookingService.confiremPayment(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "You payment has successfully received",
+    data: reslut,
+  });
+});
 export const bookingController = {
   addBooking,
   getAllBooking,
   myBookings,
   udpateBooking,
   deleteBooking,
+  confirmPayment,
 };

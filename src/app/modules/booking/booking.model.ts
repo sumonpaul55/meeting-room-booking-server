@@ -6,9 +6,9 @@ const bookingModelSchema = new Schema<TBooking>({
   slots: [{ type: Schema.Types.ObjectId, ref: "Slot" }],
   user: { type: Schema.Types.ObjectId, required: [true, "User Id is required"], ref: "User" },
   date: { type: Date, required: [true, "date is required"] },
-
+  phone: { type: Number, required: [true, "Number is required"] },
+  address: { type: String, required: [true, "Address is required"] },
   totalAmount: { type: Number, required: [true, "total amount of selected slot"] },
-
   isConfirmed: { type: String, enum: ["confirmed", "unconfirmed", "canceled"], default: "unconfirmed" },
   isDeleted: { type: Boolean, default: false },
 });

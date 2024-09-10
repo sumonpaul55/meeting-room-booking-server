@@ -21,7 +21,7 @@ const addSlotDb = async (payload: TSlot) => {
 const getAllSlotDB = async (payload: any) => {
   if (Object?.values(payload)?.length) {
     const result = await Slot.find({
-      $or: [{ date: payload.date }, { room: payload.roomId }],
+      $or: [{ date: payload.date }, { room: payload.roomId }, { isBooked: payload.isBooked }],
     })
       .populate("room")
       .sort(payload.sort);

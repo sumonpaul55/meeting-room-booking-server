@@ -1,8 +1,7 @@
-import { isAborted } from "zod";
 import { TRooms } from "./room.interface";
 import { Rooms } from "./room.model";
 import QueryBuilder from "../../builder/queryBuilder";
-import { query } from "express";
+
 import { searchableField } from "./searchAbleField";
 
 const creatRooms = async (payLoad: TRooms) => {
@@ -19,12 +18,17 @@ const getAllRoomsFromDb = async (query: Record<string, unknown>) => {
     .limit()
     .paginate()
     .range()
-    .capcity();
+    .capcity()
+    .roomsId();
   const result = await roomquery.modelQuery;
   const meta = await roomquery.countTotal();
   return { result, meta };
   // return result;
 };
+// get some rooms
+// const getSomeRoomsDb = async (payload: string[]) => {
+//   return Rooms.find({ _id: payload });
+// };
 // get a rooms
 const getAroomsFromDb = async (id: string) => {
   const result = await Rooms.findById(id);

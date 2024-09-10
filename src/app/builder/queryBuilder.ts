@@ -26,7 +26,7 @@ class QueryBuilder<T> {
   // filtering
   filter() {
     const queryObj = { ...this.query }; //copy of all queries
-    const excludeFields = ["search", "sort", "limit", "range", "page", "fields", "capacity"];
+    const excludeFields = ["search", "sort", "limit", "range", "page", "fields", "capacity", "roomsId"];
     excludeFields.forEach((el) => delete queryObj[el]);
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
     return this;
@@ -64,12 +64,25 @@ class QueryBuilder<T> {
     this.modelQuery = this.modelQuery.sort(sort as string);
     return this;
   }
-
+  // roomsId
+  roomsId() {
+    const roomsId = this.query.roomsId;
+    if (roomsId) {
+      const newroomsId = (roomsId as string).split(" ");
+      console.log(newroomsId);
+      // let rangevalue = newRange.map((range) => new RegExp(`^${range}$`, "i"));
+      this.modelQuery = this.modelQuery.find({
+        _id: newroomsId,
+      });
+    }
+    return this;
+  }
   limit() {
     const limit = Number(this?.query?.limit || 6);
     this.modelQuery = this.modelQuery.find().limit(limit as number);
     return this;
   }
+
   //   pagination
   paginate() {
     const page = Number(this?.query?.page) || 1;

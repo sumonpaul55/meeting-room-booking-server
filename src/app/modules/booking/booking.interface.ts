@@ -7,6 +7,8 @@ export type TBooking = {
   room: mongoose.Types.ObjectId;
   slots: mongoose.Types.ObjectId[];
   user: mongoose.Types.ObjectId;
+  phone: number;
+  address: string;
   totalAmount?: number;
   isConfirmed?: "confirmed" | "unconfirmed" | "canceled";
   isDeleted?: boolean;
