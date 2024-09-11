@@ -2,20 +2,20 @@ import mongoose, { model, Schema } from "mongoose";
 import { TBooking } from "./booking.interface";
 
 const bookingModelSchema = new Schema<TBooking>({
+  email: { type: String, required: true },
+  isConfirmed: { type: String, enum: ["confirmed", "unconfirmed", "canceled"], default: "unconfirmed" },
+  paymentId: { type: String, required: true },
+  paymentTime: { type: Number, required: true },
+  phone: { type: String, required: true },
   room: [
     {
-      _id: { type: Schema.Types.ObjectId, required: true, ref: "Rooms" }, // Required ObjectId referencing Rooms
-      date: { type: String, required: true }, // Date as string
-      slots: { type: String, required: true }, // Array of strings for slots
+      _id: { type: Schema.Types.ObjectId, required: true, ref: "Rooms" },
+      date: { type: String, required: true },
+      slots: [{ type: Schema.Types.ObjectId, ref: "Slots", required: true }],
     },
   ],
-  user: { type: Schema.Types.ObjectId, required: true, ref: "User" }, // Required ObjectId referencing User
-  phone: { type: String, required: true }, // Required string for phone number
-  paymentId: { type: String, required: true }, // Required string for payment ID
-  email: { type: String, required: true }, // Required string for email
-  paymentTime: { type: String, required: true }, // Required string for payment time
-  totalAmount: { type: Number, required: [true, "Total amount please"] }, // Optional number for totalAmount
-  isConfirmed: { type: String, enum: ["confirmed", "unconfirmed", "canceled"], default: "unconfirmed" }, // Optional enum field
+  totalAmount: { type: Number, required: true },
+  user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   isDeleted: { type: Boolean, default: false },
 });
 

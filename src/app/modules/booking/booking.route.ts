@@ -9,7 +9,9 @@ const router = Router();
 
 router.post("/confirm-payment", bookingController.confirmPayment);
 router.post("/bookings", authGuared(USER_ROLE.user), validateRequest(bookingValidation.bookingValidationSchema), bookingController.addBooking);
+
 router.get("/bookings", authGuared(USER_ROLE.admin), bookingController.getAllBooking);
+
 router.get("/my-bookings", authGuared(USER_ROLE.user), bookingController.myBookings);
 router.put(
   "/bookings/:id",

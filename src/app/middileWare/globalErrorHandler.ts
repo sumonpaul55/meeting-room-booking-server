@@ -17,11 +17,12 @@ const globalErrorhandler: ErrorRequestHandler = (err, req, res, next) => {
       message: "Something went wrong",
     },
   ];
+
   if (err instanceof ZodError) {
-    const simpliFiedError = handleZodError(err);
-    statusCode = simpliFiedError.statusCode;
-    message = simpliFiedError.message;
-    errorMessages = simpliFiedError?.errorSource;
+    const simpliFiedzodError = handleZodError(err);
+    statusCode = simpliFiedzodError.statusCode;
+    message = simpliFiedzodError.message;
+    errorMessages = simpliFiedzodError?.errorSource;
   } else if (err?.name === "ValidationError") {
     const simpliFiedError = handleValidationError(err);
     statusCode = simpliFiedError.statusCode;

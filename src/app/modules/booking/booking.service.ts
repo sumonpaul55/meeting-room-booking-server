@@ -24,26 +24,44 @@ const confiremPayment = async (payload: { paymentId: string; total: number }) =>
 };
 
 const addBookingDb = async (payload: TBooking) => {
-  console.log(payload);
+  const roomIds: string[] = [];
+  const slotsids: string[] = [];
+  payload?.room?.map((room) => {
+    roomIds.push(`${room._id}`);
+    room?.slots?.map((slot) => {
+      slotsids.push(`${slot}`);
+    });
+  });
+  // console.log(payload);
+  const isUserExist = await User.find({ email: payload.email, _id: payload.user });
+  if (!isUserExist.length) {
+    throw new AppError(httpStatus.NOT_FOUND, "Invalid User");
+  }
+  // check room is available
+  const roomAvailable = await Rooms.find({
+    _id: { $in: roomIds },
+  });
+  if (!roomAvailable.length) {
+    throw new AppError(httpStatus.NOT_FOUND, "Room Not Found");
+  }
   // check slot by date and room available or not
-  const isExistSlot = await Slot.find({});
+
+  const isExistSlot = await Slot.find({
+    _id: { $in: slotsids },
+    isBooked: false,
+  });
 
   if (!isExistSlot?.length) {
     throw new AppError(httpStatus.NOT_FOUND, "Slot is not available");
   }
-  // // get rooms
-  // const targetedRooms = await Rooms.findById(payload.room);
-  // if (!targetedRooms) {
-  //   throw new AppError(httpStatus.NOT_FOUND, "Room not Found");
-  // }
-  // // payload.totalAmount = targetedRooms?.pricePerSlot * payload.slots.length;
-  // const result = await Bookings.create(payload);
+
+  const result = await Bookings.create(payload);
   // const newBookingId = result._id;
-  // // change the isBooked status
-  // await Slot.updateMany({ _id: payload.slots }, { isBooked: true }, { new: true });
+  // change the isBooked status
+  await Slot.updateMany({ _id: { $in: slotsids } }, { isBooked: true }, { new: true });
+  return result;
 
   // const lastBookinged = await Bookings.findById(newBookingId).populate("room").populate("slots").populate("user");
-  // return lastBookinged;
 };
 const getAllBookingFromDb = async () => {
   const result = await Bookings.find({ isDeleted: false }).populate("room").populate("slots").populate("user");

@@ -3,20 +3,20 @@ import { z } from "zod";
 
 const bookingValidationSchema = z.object({
   body: z.object({
+    email: z.string().email(),
+    paymentId: z.string(),
+    paymentTime: z.number(),
+    phone: z.string(),
     room: z.array(
       z.object({
-        _id: z.string(), // Validates ObjectId
-        date: z.string(), // Basic string validation for date
-        slots: z.string(), // Array of strings for slots
+        _id: z.string(),
+        date: z.string(), // Assuming the date is in string format
+        slots: z.array(z.string()), // Array of strings for slot IDs
       })
     ),
-    user: z.string({ required_error: "Need an User" }), // ObjectId validation
-    phone: z.string(), // Basic string validation for phone number
-    paymentId: z.string(), // Basic string validation for payment ID
-    email: z.string().email("Invalid email address"), // Email validation
-    paymentTime: z.number(), // Basic string validation for payment time
-    totalAmount: z.number(), // Optional number
-    isConfirmed: z.enum(["confirmed", "unconfirmed", "canceled"]).optional(),
+    totalAmount: z.number(),
+    user: z.string(),
+    isConfirmed: z.enum(["confirmed", "unconfirmed", "canceled"]),
   }),
 });
 
