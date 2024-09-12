@@ -8,7 +8,7 @@ import { USER_ROLE } from "../User/user.constant";
 const router = Router();
 
 router.post("/confirm-payment", bookingController.confirmPayment);
-router.post("/bookings", authGuared(USER_ROLE.user), validateRequest(bookingValidation.bookingValidationSchema), bookingController.addBooking);
+router.post("/bookings", validateRequest(bookingValidation.bookingValidationSchema), bookingController.addBooking);
 
 router.get("/bookings", authGuared(USER_ROLE.admin), bookingController.getAllBooking);
 
