@@ -13,12 +13,15 @@ router.post("/bookings", authGuared(USER_ROLE.user), validateRequest(bookingVali
 router.get("/bookings", authGuared(USER_ROLE.admin), bookingController.getAllBooking);
 
 router.get("/my-bookings", authGuared(USER_ROLE.user), bookingController.myBookings);
-router.put(
-  "/bookings/:id",
-  authGuared(USER_ROLE.admin),
-  validateRequest(bookingValidation.updateBookingValidationSchema),
-  bookingController.udpateBooking
-);
-router.delete("/bookings/:id", authGuared(USER_ROLE.admin), bookingController.deleteBooking);
+
+router.put("/confirm-booking/:id", authGuared(USER_ROLE.admin), bookingController.conFirmBookingByAdmin);
+
+// router.put(
+//   "/bookings/:id",
+//   authGuared(USER_ROLE.admin),
+//   validateRequest(bookingValidation.updateBookingValidationSchema),
+//   bookingController.udpateBooking
+// );
+router.delete("/bookings/:id", bookingController.deleteBooking);
 
 export const bookingsRouter = router;

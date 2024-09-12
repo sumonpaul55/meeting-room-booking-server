@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 import { TBooking } from "./booking.interface";
 
 const bookingModelSchema = new Schema<TBooking>({
@@ -11,7 +11,7 @@ const bookingModelSchema = new Schema<TBooking>({
     {
       _id: { type: Schema.Types.ObjectId, required: true, ref: "Rooms" },
       date: { type: String, required: true },
-      slots: [{ type: Schema.Types.ObjectId, ref: "Slots", required: true }],
+      slots: [{ type: Schema.Types.ObjectId, ref: "Slot", required: true }],
     },
   ],
   totalAmount: { type: Number, required: true },

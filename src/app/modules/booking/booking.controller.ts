@@ -41,15 +41,26 @@ const myBookings = catchAsync(async (req, res) => {
     data: reslut,
   });
 });
-const udpateBooking = catchAsync(async (req, res) => {
-  const result = await bookingService.updateBookingDb(req.params.id, req.body);
+// const udpateBooking = catchAsync(async (req, res) => {
+//   const result = await bookingService.updateBookingDb(req.params.id, req.body);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: "Booking updated successfully",
+//     data: result,
+//   });
+// });
+
+const conFirmBookingByAdmin = catchAsync(async (req, res) => {
+  const result = await bookingService.confirmBooking(req.params.id, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Booking updated successfully",
+    message: "Booking Confirm Successfully",
     data: result,
   });
 });
+
 const deleteBooking = catchAsync(async (req, res) => {
   const result = await bookingService.deleteBookingDb(req.params.id);
   sendResponse(res, {
@@ -64,7 +75,7 @@ export const bookingController = {
   addBooking,
   getAllBooking,
   myBookings,
-  udpateBooking,
   deleteBooking,
   confirmPayment,
+  conFirmBookingByAdmin,
 };

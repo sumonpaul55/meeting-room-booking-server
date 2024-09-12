@@ -1,3 +1,4 @@
+import { model } from "mongoose";
 import httpStatus from "http-status";
 import AppError from "../../erros/AppError";
 import { Rooms } from "../Room/room.model";
@@ -64,21 +65,38 @@ const addBookingDb = async (payload: TBooking) => {
   // const lastBookinged = await Bookings.findById(newBookingId).populate("room").populate("slots").populate("user");
 };
 const getAllBookingFromDb = async () => {
-  const result = await Bookings.find({ isDeleted: false }).populate("room").populate("slots").populate("user");
+  const result = await Bookings.find({ isDeleted: false })
+    .populate({
+      path: "room",
+      populate: { path: "_id slots" },
+    })
+    .populate("user");
+
   return result;
 };
 const getMyBookings = async (payload: string) => {
   // get the user First
-  const userData = await User.findOne({ email: payload, isDeleted: false });
-  const userId = userData?._id;
-  const result = await Bookings.findOne({ user: userId }).populate("room").populate("slots").populate("user");
+  const userData = await Bookings.find({ email: payload, isDeleted: false })
+    .populate({
+      path: "room",
+      populate: { path: "_id slots" },
+    })
+    .populate("user");
+
+  return userData;
+};
+// const updateBookingDb = async (id: string, payload: TBooking) => {
+//   await Bookings.findByIdAndUpdate(id, payload, { new: true });
+//   const bookedi = await Bookings.findById(id).populate("room").populate("slots").populate("user");
+//   return bookedi;
+// };
+
+const confirmBooking = async (id: string, payload: { status: string }) => {
+  console.log(payload);
+  const result = await Bookings.findByIdAndUpdate(id, { isConfirmed: payload.status }, { new: true, runValidators: true });
   return result;
 };
-const updateBookingDb = async (id: string, payload: TBooking) => {
-  await Bookings.findByIdAndUpdate(id, payload, { new: true });
-  const bookedi = await Bookings.findById(id).populate("room").populate("slots").populate("user");
-  return bookedi;
-};
+
 const deleteBookingDb = async (id: string) => {
   // confirm bookings is exist
   const isExist = await Bookings.findById(id);
@@ -93,7 +111,7 @@ export const bookingService = {
   addBookingDb,
   getAllBookingFromDb,
   getMyBookings,
-  updateBookingDb,
   deleteBookingDb,
   confiremPayment,
+  confirmBooking,
 };
