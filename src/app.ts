@@ -6,7 +6,7 @@ import globalErrorhandler from "./app/middileWare/globalErrorHandler";
 
 const app = express();
 
-app.use(cors({ origin: ["*", "http://localhost:5173"], credentials: true }));
+app.use(cors({ origin: ["*", "https://meeting-room-booking-client.vercel.app"], credentials: true }));
 
 app.use(express.json());
 
