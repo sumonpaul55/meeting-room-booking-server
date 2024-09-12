@@ -10,7 +10,7 @@ import { User } from "../User/user.model";
 import Stripe from "stripe";
 import config from "../../config";
 
-const stripe = new Stripe(config.SECRET_KET as string);
+const stripe = new Stripe(config.SECRET_KET as any);
 
 const confiremPayment = async (payload: { paymentId: string; total: number }) => {
   const { paymentId, total } = payload;

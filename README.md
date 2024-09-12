@@ -24,4 +24,8 @@ npm install
 
 * JWT_ACCESS_EXPIRE_IN=5d
 
+STRIPE_SECRET_KEY=Your stripe account Secet keys
+
+CLIENT_SITE_URL=https://meeting-room-booking-client.vercel.app
+
 # then, npm run dev
