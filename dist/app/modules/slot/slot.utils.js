@@ -9,24 +9,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createSlot = void 0;
+exports.createSlots = exports.checkSlotExist = exports.generateSlot = void 0;
 const slot_model_1 = require("./slot.model");
-const createSlot = (startTime, endTime, roomid, date) => __awaiter(void 0, void 0, void 0, function* () {
-    const startTimeHoure = startTime.split(":")[0];
-    // check if the slot is available
-    let slotDate = [];
-    const numberOfSlot = parseInt(endTime) - parseInt(startTime);
-    for (let i = 0; i < numberOfSlot; i++) {
-        const dynamicSlots = {
-            room: `${roomid}`,
-            date: date,
-            isBooked: false,
-            startTime: Number(startTimeHoure) + i + ":00",
-            endTime: Number(startTimeHoure) + (i + 1) + ":00",
-        };
-        const slotsData = yield slot_model_1.Slot.create(dynamicSlots);
-        slotDate.push(slotsData);
+const generateSlot = (startTime, endTime) => __awaiter(void 0, void 0, void 0, function* () {
+    const slots = [];
+    let current = new Date(`1970-01-01T${startTime}:00`);
+    const end = new Date(`1970-01-01T${endTime}:00`);
+    while (current < end) {
+        const nextSlot = new Date(current.getTime() + 60 * 60 * 1000); // Add 1 hour
+        slots.push({
+            startTime: current.toTimeString().slice(0, 5),
+            endTime: nextSlot.toTimeString().slice(0, 5),
+        });
+        current = nextSlot;
     }
-    return slotDate;
+    return slots;
 });
-exports.createSlot = createSlot;
+exports.generateSlot = generateSlot;
+const checkSlotExist = (roomId, date, slots) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingSlots = yield slot_model_1.Slot.find({
+        room: roomId,
+        date: date,
+        $or: slots === null || slots === void 0 ? void 0 : slots.map((slot) => ({
+            startTime: { $lt: slot.endTime },
+            endTime: { $gt: slot.startTime },
+        })),
+    });
+    return existingSlots.length > 0;
+});
+exports.checkSlotExist = checkSlotExist;
+const createSlots = (roomId, date, slots) => __awaiter(void 0, void 0, void 0, function* () {
+    const newSlots = slots === null || slots === void 0 ? void 0 : slots.map((slot) => ({
+        room: roomId,
+        date: date,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        isBooked: false,
+    }));
+    return yield slot_model_1.Slot.insertMany(newSlots);
+});
+exports.createSlots = createSlots;

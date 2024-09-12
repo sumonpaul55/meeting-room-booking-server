@@ -19,7 +19,7 @@ const config_1 = __importDefault(require("../../config"));
 const UserModelSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, select: 0 },
+    password: { type: String },
     phone: { type: String, required: true },
     role: {
         type: String,
@@ -36,4 +36,15 @@ UserModelSchema.pre("save", function (next) {
         next();
     });
 });
+// doc for post middle ware hide the password
+// UserModelSchema.post("save", function (doc, next) {
+//   doc.password = "";
+//   next();
+// });
+// check password is matched
+UserModelSchema.statics.isPasswordMatched = function (plaingTextPassword, hashPassword) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield bcrypt_1.default.compare(plaingTextPassword, hashPassword);
+    });
+};
 exports.User = (0, mongoose_1.model)("User", UserModelSchema);

@@ -20,10 +20,10 @@ const globalErrorhandler = (err, req, res, next) => {
         },
     ];
     if (err instanceof zod_1.ZodError) {
-        const simpliFiedError = (0, handleZodError_1.default)(err);
-        statusCode = simpliFiedError.statusCode;
-        message = simpliFiedError.message;
-        errorMessages = simpliFiedError === null || simpliFiedError === void 0 ? void 0 : simpliFiedError.errorSource;
+        const simpliFiedzodError = (0, handleZodError_1.default)(err);
+        statusCode = simpliFiedzodError.statusCode;
+        message = simpliFiedzodError.message;
+        errorMessages = simpliFiedzodError === null || simpliFiedzodError === void 0 ? void 0 : simpliFiedzodError.errorSource;
     }
     else if ((err === null || err === void 0 ? void 0 : err.name) === "ValidationError") {
         const simpliFiedError = (0, handleValidationError_1.default)(err);

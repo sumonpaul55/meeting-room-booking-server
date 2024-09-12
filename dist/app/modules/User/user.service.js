@@ -13,12 +13,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userServices = void 0;
-const handleEmptyData_1 = __importDefault(require("../../utils/handleEmptyData"));
+const queryBuilder_1 = __importDefault(require("../../builder/queryBuilder"));
 const user_model_1 = require("./user.model");
-const getAllUsersFromDb = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_model_1.User.find();
-    return (0, handleEmptyData_1.default)(result);
+const getAllUsersFromDb = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const userQuery = new queryBuilder_1.default(user_model_1.User.find({ isDeleted: false }), query).search(["role", "name"]).filter().sort();
+    const result = yield userQuery.modelQuery;
+    return result;
+});
+const deleteUserDb = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_model_1.User.findByIdAndUpdate(id, { isDeleted: true });
 });
 exports.userServices = {
     getAllUsersFromDb,
+    deleteUserDb,
 };

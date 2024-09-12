@@ -69,7 +69,6 @@ class QueryBuilder<T> {
     const roomsId = this.query.roomsId;
     if (roomsId) {
       const newroomsId = (roomsId as string).split(" ");
-      console.log(newroomsId);
       // let rangevalue = newRange.map((range) => new RegExp(`^${range}$`, "i"));
       this.modelQuery = this.modelQuery.find({
         _id: newroomsId,

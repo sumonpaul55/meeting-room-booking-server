@@ -15,41 +15,66 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.slotService = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const AppError_1 = __importDefault(require("../../erros/AppError"));
-const room_model_1 = require("../Room/room.model");
 const slot_model_1 = require("./slot.model");
 const slot_utils_1 = require("./slot.utils");
-const handleEmptyData_1 = __importDefault(require("../../utils/handleEmptyData"));
 const addSlotDb = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    // check slot block or not
-    const isRoomAvailable = yield room_model_1.Rooms.findById(payload.room);
-    if (!isRoomAvailable) {
-        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Room not found with this " + payload.room);
+    //create slots times
+    const createSlotTime = yield (0, slot_utils_1.generateSlot)(payload === null || payload === void 0 ? void 0 : payload.startTime, payload === null || payload === void 0 ? void 0 : payload.endTime);
+    // check slot time is available
+    const slotExist = yield (0, slot_utils_1.checkSlotExist)(payload.room, payload.date, createSlotTime);
+    if (slotExist) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "One or more slots already exist within the specified time range.");
     }
-    // check the slot shedule is available
-    const isSlotAvailabe = yield slot_model_1.Slot.findOne({
-        room: payload.room,
-        date: payload.date,
-    });
-    if (isSlotAvailabe) {
-        throw new AppError_1.default(http_status_1.default.CONFLICT, "Slot Time is not available");
-    }
-    else
-        return yield (0, slot_utils_1.createSlot)(payload.startTime, payload.endTime, payload.room, payload.date);
+    return yield (0, slot_utils_1.createSlots)(payload.room, payload.date, createSlotTime);
 });
 const getAllSlotDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    if (payload.date || payload.roomId) {
+    var _a;
+    if ((_a = Object === null || Object === void 0 ? void 0 : Object.values(payload)) === null || _a === void 0 ? void 0 : _a.length) {
         const result = yield slot_model_1.Slot.find({
-            $or: [{ date: payload.date }, { room: payload.roomId }],
-            isBooked: false,
-        });
-        return (0, handleEmptyData_1.default)(result);
+            $or: [{ date: payload.date }, { room: payload.roomId }, { isBooked: payload.isBooked }],
+        })
+            .populate("room")
+            .sort(payload.sort);
+        return result;
     }
     else {
-        const result = yield slot_model_1.Slot.find({ isBooked: false });
-        return (0, handleEmptyData_1.default)(result);
+        const result = yield slot_model_1.Slot.find().populate("room").sort("room");
+        return result;
     }
+});
+// delete slot
+const deleteSlotDb = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // check slot is exist
+    const isexist = yield slot_model_1.Slot.findById(payload);
+    if (!isexist) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Slot Not found for delete");
+    }
+    const result = yield slot_model_1.Slot.deleteOne({ _id: payload });
+    return result;
+});
+// update slot
+const updateSlots = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // check updateable slot exist
+    const isExistRequestedSlot = yield slot_model_1.Slot.findById(id);
+    if (!isExistRequestedSlot) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "This Slot is not Exist");
+    }
+    // empty array for creatd slots
+    const comingSlots = [];
+    if (payload.startTime && payload.endTime) {
+        comingSlots.push({ startTime: payload.startTime, endTime: payload.endTime });
+        // check the slot shedule is available
+        const slotNotexist = yield (0, slot_utils_1.checkSlotExist)(payload.room, payload.date, comingSlots);
+        if (slotNotexist) {
+            throw new AppError_1.default(http_status_1.default.CONFLICT, "Slot Time is not available");
+        }
+    }
+    const result = yield slot_model_1.Slot.findByIdAndUpdate(id, payload, { new: true });
+    return result;
 });
 exports.slotService = {
     addSlotDb,
     getAllSlotDB,
+    deleteSlotDb,
+    updateSlots,
 };

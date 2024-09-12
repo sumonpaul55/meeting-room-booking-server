@@ -9,6 +9,7 @@ const roomsModelSchema = new mongoose_1.Schema({
     capacity: { type: Number, required: true },
     pricePerSlot: { type: Number, required: true },
     amenities: [{ type: String }],
+    roomImg: [{ type: String, default: "" }],
     isDeleted: { type: Boolean, default: false },
 });
 exports.Rooms = (0, mongoose_1.model)("Rooms", roomsModelSchema);

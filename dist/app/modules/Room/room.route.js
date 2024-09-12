@@ -14,6 +14,7 @@ const router = (0, express_1.Router)();
 router.post("/", (0, authGuared_1.default)(user_constant_1.USER_ROLE.admin), (0, validateRequest_1.default)(room_validation_1.roomValidation.createRoomsValidationSchema), room_controller_1.roomsController.createRooms);
 router.get("/", room_controller_1.roomsController.getAllRooms);
 router.get("/:id", room_controller_1.roomsController.getArooms);
+// router.get("/rooms/someRooms", roomsController.getSomeRooms);
 // update rooms
 router.put("/:id", (0, authGuared_1.default)(user_constant_1.USER_ROLE.admin), (0, validateRequest_1.default)(room_validation_1.roomValidation.updateRoomsValidationSchema), room_controller_1.roomsController.updateRooms);
 router.delete("/:id", (0, authGuared_1.default)(user_constant_1.USER_ROLE.admin), room_controller_1.roomsController.deleteRoom);

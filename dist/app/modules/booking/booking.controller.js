@@ -17,12 +17,22 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const booking_service_1 = require("./booking.service");
+// confirm payment
+const confirmPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const reslut = yield booking_service_1.bookingService.confiremPayment(req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "You payment has successfully received",
+        data: reslut,
+    });
+}));
 const addBooking = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield booking_service_1.bookingService.addBookingDb(req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: "Booking created successfully",
+        message: "Your Booking has been received.",
         data: result,
     });
 }));
@@ -44,12 +54,21 @@ const myBookings = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: reslut,
     });
 }));
-const udpateBooking = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield booking_service_1.bookingService.updateBookingDb(req.params.id, req.body);
+// const udpateBooking = catchAsync(async (req, res) => {
+//   const result = await bookingService.updateBookingDb(req.params.id, req.body);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: "Booking updated successfully",
+//     data: result,
+//   });
+// });
+const conFirmBookingByAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield booking_service_1.bookingService.confirmBooking(req.params.id, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: "Booking updated successfully",
+        message: "Booking Confirm Successfully",
         data: result,
     });
 }));
@@ -66,6 +85,7 @@ exports.bookingController = {
     addBooking,
     getAllBooking,
     myBookings,
-    udpateBooking,
     deleteBooking,
+    confirmPayment,
+    conFirmBookingByAdmin,
 };

@@ -19,45 +19,86 @@ const room_model_1 = require("../Room/room.model");
 const booking_model_1 = require("./booking.model");
 const slot_model_1 = require("../slot/slot.model");
 const user_model_1 = require("../User/user.model");
-const handleEmptyData_1 = __importDefault(require("../../utils/handleEmptyData"));
+const stripe_1 = __importDefault(require("stripe"));
+const config_1 = __importDefault(require("../../config"));
+const stripe = new stripe_1.default(config_1.default.SECRET_KET);
+const confiremPayment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { paymentId, total } = payload;
+    const paymentIntent = yield stripe.paymentIntents.create({
+        amount: total * 100,
+        currency: "usd",
+        payment_method: paymentId,
+        confirm: true,
+        return_url: `${config_1.default.CLIENT_SITE_URL}/success`,
+    });
+    return paymentIntent;
+});
 const addBookingDb = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const roomIds = [];
+    const slotsids = [];
+    (_a = payload === null || payload === void 0 ? void 0 : payload.room) === null || _a === void 0 ? void 0 : _a.map((room) => {
+        var _a;
+        roomIds.push(`${room._id}`);
+        (_a = room === null || room === void 0 ? void 0 : room.slots) === null || _a === void 0 ? void 0 : _a.map((slot) => {
+            slotsids.push(`${slot}`);
+        });
+    });
+    // console.log(payload);
+    const isUserExist = yield user_model_1.User.find({ email: payload.email, _id: payload.user });
+    if (!isUserExist.length) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Invalid User");
+    }
+    // check room is available
+    const roomAvailable = yield room_model_1.Rooms.find({
+        _id: { $in: roomIds },
+    });
+    if (!roomAvailable.length) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Room Not Found");
+    }
     // check slot by date and room available or not
     const isExistSlot = yield slot_model_1.Slot.find({
-        _id: payload.slots,
-        date: payload.date,
+        _id: { $in: slotsids },
         isBooked: false,
     });
-    if (!isExistSlot.length) {
-        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Slot already Booked");
+    if (!(isExistSlot === null || isExistSlot === void 0 ? void 0 : isExistSlot.length)) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Slot is not available");
     }
-    // get rooms
-    const targetedRooms = yield room_model_1.Rooms.findById(payload.room);
-    if (!targetedRooms) {
-        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Room not Found");
-    }
-    payload.totalAmount = (targetedRooms === null || targetedRooms === void 0 ? void 0 : targetedRooms.pricePerSlot) * payload.slots.length;
     const result = yield booking_model_1.Bookings.create(payload);
-    const newBookingId = result._id;
+    // const newBookingId = result._id;
     // change the isBooked status
-    yield slot_model_1.Slot.updateMany({ _id: payload.slots }, { isBooked: true }, { new: true });
-    const lastBookinged = yield booking_model_1.Bookings.findById(newBookingId).populate("room").populate("slots").populate("user");
-    return lastBookinged;
+    yield slot_model_1.Slot.updateMany({ _id: { $in: slotsids } }, { isBooked: true }, { new: true });
+    return result;
+    // const lastBookinged = await Bookings.findById(newBookingId).populate("room").populate("slots").populate("user");
 });
 const getAllBookingFromDb = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield booking_model_1.Bookings.find({ isDeleted: false }).populate("room").populate("slots").populate("user");
-    return (0, handleEmptyData_1.default)(result);
+    const result = yield booking_model_1.Bookings.find({ isDeleted: false })
+        .populate({
+        path: "room",
+        populate: { path: "_id slots" },
+    })
+        .populate("user");
+    return result;
 });
 const getMyBookings = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     // get the user First
-    const userData = yield user_model_1.User.findOne({ email: payload, isDeleted: false });
-    const userId = userData === null || userData === void 0 ? void 0 : userData._id;
-    const result = yield booking_model_1.Bookings.findOne({ user: userId }).populate("room").populate("slots").populate("user");
-    return (0, handleEmptyData_1.default)(result);
+    const userData = yield booking_model_1.Bookings.find({ email: payload, isDeleted: false })
+        .populate({
+        path: "room",
+        populate: { path: "_id slots" },
+    })
+        .populate("user");
+    return userData;
 });
-const updateBookingDb = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    yield booking_model_1.Bookings.findByIdAndUpdate(id, payload, { new: true });
-    const bookedi = yield booking_model_1.Bookings.findById(id).populate("room").populate("slots").populate("user");
-    return bookedi;
+// const updateBookingDb = async (id: string, payload: TBooking) => {
+//   await Bookings.findByIdAndUpdate(id, payload, { new: true });
+//   const bookedi = await Bookings.findById(id).populate("room").populate("slots").populate("user");
+//   return bookedi;
+// };
+const confirmBooking = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(payload);
+    const result = yield booking_model_1.Bookings.findByIdAndUpdate(id, { isConfirmed: payload.status }, { new: true, runValidators: true });
+    return result;
 });
 const deleteBookingDb = (id) => __awaiter(void 0, void 0, void 0, function* () {
     // confirm bookings is exist
@@ -72,6 +113,7 @@ exports.bookingService = {
     addBookingDb,
     getAllBookingFromDb,
     getMyBookings,
-    updateBookingDb,
     deleteBookingDb,
+    confiremPayment,
+    confirmBooking,
 };

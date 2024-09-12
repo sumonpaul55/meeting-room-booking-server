@@ -28,7 +28,7 @@ const createRooms = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
 }));
 // get all rooms
 const getAllRooms = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield room_service_1.roomsServices.getAllRoomsFromDb();
+    const result = yield room_service_1.roomsServices.getAllRoomsFromDb(req.query);
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_1.default.OK,
@@ -46,6 +46,16 @@ const getArooms = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
         data: result,
     });
 }));
+// get a rooms
+// const getSomeRooms = catchAsync(async (req, res) => {
+//   const result = await roomsServices.getSomeRoomsDb(req.body);
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: httpStatus.OK,
+//     message: "Room retrieved successfully",
+//     data: result,
+//   });
+// });
 // update rooms
 const updateRooms = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield room_service_1.roomsServices.updateRoomsIntoDb(req.params.id, req.body);

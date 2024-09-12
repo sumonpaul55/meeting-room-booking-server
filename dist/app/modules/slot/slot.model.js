@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Slot = void 0;
 const mongoose_1 = require("mongoose");
 const slotModelSchema = new mongoose_1.Schema({
-    room: { type: mongoose_1.Schema.Types.ObjectId, required: [true, "room id need for slot"] },
+    room: { type: mongoose_1.Schema.Types.ObjectId, required: [true, "room id need for slot"], ref: "Rooms" },
     date: { type: Date, required: [true, "slot date is required"] },
     startTime: { type: String, required: [true, "start time need"] },
     endTime: { type: String, required: [true, "An end time needed"] },

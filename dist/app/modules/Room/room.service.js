@@ -14,20 +14,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.roomsServices = void 0;
 const room_model_1 = require("./room.model");
-const handleEmptyData_1 = __importDefault(require("../../utils/handleEmptyData"));
+const queryBuilder_1 = __importDefault(require("../../builder/queryBuilder"));
+const searchAbleField_1 = require("./searchAbleField");
 const creatRooms = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield room_model_1.Rooms.create(payLoad);
     return result;
 });
 // get a rooms
-const getAllRoomsFromDb = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield room_model_1.Rooms.find();
-    return (0, handleEmptyData_1.default)(result);
+const getAllRoomsFromDb = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    // const result = await Rooms.find();
+    const roomquery = new queryBuilder_1.default(room_model_1.Rooms.find({ isDeleted: false }), query)
+        .search(searchAbleField_1.searchableField)
+        .filter()
+        .sort()
+        .limit()
+        .paginate()
+        .range()
+        .capcity()
+        .roomsId();
+    const result = yield roomquery.modelQuery;
+    const meta = yield roomquery.countTotal();
+    return { result, meta };
+    // return result;
 });
+// get some rooms
+// const getSomeRoomsDb = async (payload: string[]) => {
+//   return Rooms.find({ _id: payload });
+// };
 // get a rooms
 const getAroomsFromDb = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield room_model_1.Rooms.findById(id);
-    return (0, handleEmptyData_1.default)(result);
+    return result;
 });
 // update rooms into db
 const updateRoomsIntoDb = (id, payLoad) => __awaiter(void 0, void 0, void 0, function* () {
