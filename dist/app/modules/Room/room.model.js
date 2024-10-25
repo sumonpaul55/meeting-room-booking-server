@@ -11,5 +11,5 @@ const roomsModelSchema = new mongoose_1.Schema({
     amenities: [{ type: String }],
     roomImg: [{ type: String, default: "" }],
     isDeleted: { type: Boolean, default: false },
-});
+}, { timestamps: true });
 exports.Rooms = (0, mongoose_1.model)("Rooms", roomsModelSchema);

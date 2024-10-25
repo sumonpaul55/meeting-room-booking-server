@@ -40,9 +40,14 @@ const updateSlot = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const deleteAllOldSlot = catchAsync(async (req, res) => {
+  // console.log("delete all solt");
+  await slotService.deleteALLOldSlotDb();
+});
 export const slotController = {
   addSlot,
   getAllSlot,
   deleteSlot,
   updateSlot,
+  deleteAllOldSlot,
 };

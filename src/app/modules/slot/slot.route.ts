@@ -10,6 +10,7 @@ const router = Router();
 router.post("/", validateRequest(slotValidation.addSlotValidationSchema), slotController.addSlot);
 router.get("/availability", slotController.getAllSlot);
 router.delete("/delete/:id", authGuared(USER_ROLE.admin), slotController.deleteSlot);
+router.delete("/delete-old-slots", slotController.deleteAllOldSlot);
 router.patch("/update/:id", authGuared(USER_ROLE.admin), slotController.updateSlot);
 
 export const slotRoute = router;

@@ -17,7 +17,7 @@ const addSlotDb = async (payload: TSlot) => {
   }
   return await createSlots(payload.room, payload.date, createSlotTime);
 };
-
+// old slot delete and create 5 slot each month 10 date autometically
 const getAllSlotDB = async (payload: any) => {
   if (Object?.values(payload)?.length) {
     const result = await Slot.find({
@@ -40,6 +40,23 @@ const deleteSlotDb = async (payload: string) => {
   }
   const result = await Slot.deleteOne({ _id: payload });
   return result;
+};
+// delete all old slot
+const deleteALLOldSlotDb = async () => {
+  // check slot is exist
+  const today = new Date();
+  // set all time 0 like hour, munites, seconds, miliseconds
+  today.setHours(0, 0, 0, 0);
+  // const avaialbe = await Slot.find({ date: { $lt: today }, isBooked: false });
+  await Slot.deleteMany({ date: { $lt: today }, isBooked: false });
+  // create slot autometically for the room of pinacle place
+  // {
+  //   room: '66d6069ef66824cf0dd82f8b',
+  //   date: '2024-12-17T18:00:00.000Z',
+  //   endTime: '13:00',
+  //   startTime: '10:00'
+  // }
+  // check already exist or not
 };
 // update slot
 const updateSlots = async (id: string, payload: TSlot) => {
@@ -67,4 +84,5 @@ export const slotService = {
   getAllSlotDB,
   deleteSlotDb,
   updateSlots,
+  deleteALLOldSlotDb,
 };
