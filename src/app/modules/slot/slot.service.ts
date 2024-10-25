@@ -1,3 +1,4 @@
+import mongoose, { ObjectId } from "mongoose";
 import httpStatus from "http-status";
 import AppError from "../../erros/AppError";
 import { Rooms } from "../Room/room.model";
@@ -56,6 +57,22 @@ const deleteALLOldSlotDb = async () => {
   //   endTime: '13:00',
   //   startTime: '10:00'
   // }
+  // Main function to create slots on the 15th
+  // Generate the slot times, e.g., 10:00 and 15:00
+  const createSlotTime = await generateSlot("10:00", "15:00");
+
+  // Set the date to the 15th of the current month
+  const now = new Date();
+  const fifteenthOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 15);
+  const roomId = new mongoose.Types.ObjectId("66d32f64c7529009f28cebd0"); //create dynamic slot for pinnacle room every month
+  // Check if the slot already exists on the 15th
+  const slotExist = await Slot.find({ room: roomId, date: { $lte: fifteenthOfMonth }, isBooked: false });
+  if (slotExist.length) {
+    throw new AppError(httpStatus.CONFLICT, "One or more slots already exist within the specified time range.");
+  } else {
+    // Create the slot if it doesn't exist
+    await createSlots(roomId, fifteenthOfMonth, createSlotTime);
+  }
   // check already exist or not
 };
 // update slot
