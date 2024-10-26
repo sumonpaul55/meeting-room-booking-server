@@ -5,10 +5,11 @@ import { authController } from "./auth.controller";
 import { authValidation } from "./auth.validation";
 import authGuared from "../../middileWare/authGuared";
 import { USER_ROLE } from "../User/user.constant";
+import bodyParser from "../../utils/bodyParese";
 
 const router = express.Router();
 
-router.post("/signup", validateRequest(userValidations.createUserValidationSchma), authController.signUp);
+router.post("/signup", bodyParser, validateRequest(userValidations.createUserValidationSchma), authController.signUp);
 
 router.get("/users", authController.getOneUser);
 

@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
 const createUserValidationSchma = z.object({
   body: z.object({
@@ -7,6 +7,7 @@ const createUserValidationSchma = z.object({
     password: z.string().optional(),
     phone: z.string({ required_error: "phone is required" }),
     role: z.enum(["user", "admin"]).default("user"),
+    profileImage: z.string().optional(),
     address: z.string({ required_error: "address is required" }),
   }),
 });

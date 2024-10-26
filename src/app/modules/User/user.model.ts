@@ -14,6 +14,7 @@ const UserModelSchema = new Schema<TUser, UserModel>({
     default: "user",
   },
   address: { type: String, required: true },
+  profileImage: { type: String, default: "" },
   isDeleted: { type: Boolean, default: false, select: 0 },
 });
 // password becrypt before save

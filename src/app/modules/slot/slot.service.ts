@@ -60,7 +60,6 @@ const deleteALLOldSlotDb = async () => {
   // Main function to create slots on the 15th
   // Generate the slot times, e.g., 10:00 and 15:00
   const createSlotTime = await generateSlot("10:00", "15:00");
-
   // Set the date to the 15th of the current month
   const now = new Date();
   const fifteenthOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 15);

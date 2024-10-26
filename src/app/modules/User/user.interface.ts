@@ -9,9 +9,11 @@ export type TUser = {
   phone: string;
   address: string;
   role: TUserRole;
+  profileImage?: string;
   isDeleted: boolean;
 };
 
 export interface UserModel extends Model<TUser> {
   isPasswordMatched(plaingTextPassword: string, hashPassword: string): Promise<TUser>;
+  checkUserByEmail(email: string): Promise<TUser>;
 }
