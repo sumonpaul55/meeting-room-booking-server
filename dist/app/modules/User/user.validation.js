@@ -9,6 +9,7 @@ const createUserValidationSchma = zod_1.z.object({
         password: zod_1.z.string().optional(),
         phone: zod_1.z.string({ required_error: "phone is required" }),
         role: zod_1.z.enum(["user", "admin"]).default("user"),
+        profileImage: zod_1.z.string().optional(),
         address: zod_1.z.string({ required_error: "address is required" }),
     }),
 });

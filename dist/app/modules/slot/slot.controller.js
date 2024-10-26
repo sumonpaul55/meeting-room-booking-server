@@ -55,9 +55,14 @@ const updateSlot = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const deleteAllOldSlot = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log("delete all solt");
+    yield slot_service_1.slotService.deleteALLOldSlotDb();
+}));
 exports.slotController = {
     addSlot,
     getAllSlot,
     deleteSlot,
     updateSlot,
+    deleteAllOldSlot,
 };

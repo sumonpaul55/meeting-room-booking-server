@@ -5,3 +5,5 @@ cloudinary.config({
   api_key: config.CLOUDINARYY_API_KEY,
   api_secret: config.CLOUDINARY_API_SECRET,
 });
+
+export const cloudinaryUploads = cloudinary;

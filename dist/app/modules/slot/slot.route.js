@@ -14,5 +14,6 @@ const router = (0, express_1.Router)();
 router.post("/", (0, validateRequest_1.default)(slot_validation_1.slotValidation.addSlotValidationSchema), slot_controller_1.slotController.addSlot);
 router.get("/availability", slot_controller_1.slotController.getAllSlot);
 router.delete("/delete/:id", (0, authGuared_1.default)(user_constant_1.USER_ROLE.admin), slot_controller_1.slotController.deleteSlot);
+router.delete("/delete-old-slots", slot_controller_1.slotController.deleteAllOldSlot);
 router.patch("/update/:id", (0, authGuared_1.default)(user_constant_1.USER_ROLE.admin), slot_controller_1.slotController.updateSlot);
 exports.slotRoute = router;
