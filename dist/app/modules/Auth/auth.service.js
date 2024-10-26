@@ -24,8 +24,17 @@ const signUpIntoDb = (payLoad) => __awaiter(void 0, void 0, void 0, function* ()
     if (isUserExist) {
         throw new AppError_1.default(http_status_1.default.ALREADY_REPORTED, "User already Exist. Please login");
     }
-    const result = yield user_model_1.User.create(payLoad);
-    return result;
+    const newUser = yield user_model_1.User.create(payLoad);
+    const tokenPayload = {
+        name: newUser === null || newUser === void 0 ? void 0 : newUser.name,
+        email: newUser === null || newUser === void 0 ? void 0 : newUser.email,
+        role: newUser === null || newUser === void 0 ? void 0 : newUser.role,
+        profileImage: newUser === null || newUser === void 0 ? void 0 : newUser.profileImage,
+        address: newUser === null || newUser === void 0 ? void 0 : newUser.address,
+        phone: newUser === null || newUser === void 0 ? void 0 : newUser.phone,
+    };
+    const token = (0, auth_utils_1.createToken)(tokenPayload, config_1.default.Access_Token_Secret, config_1.default.JWT_ACCESS_EXPIRE_IN);
+    return { newUser, token };
 });
 const loginDb = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     // check user exist
@@ -41,6 +50,9 @@ const loginDb = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
         name: existingUser === null || existingUser === void 0 ? void 0 : existingUser.name,
         email: existingUser === null || existingUser === void 0 ? void 0 : existingUser.email,
         role: existingUser === null || existingUser === void 0 ? void 0 : existingUser.role,
+        profileImage: existingUser === null || existingUser === void 0 ? void 0 : existingUser.profileImage,
+        address: existingUser === null || existingUser === void 0 ? void 0 : existingUser.address,
+        phone: existingUser === null || existingUser === void 0 ? void 0 : existingUser.phone,
     };
     const token = (0, auth_utils_1.createToken)(tokenPayload, config_1.default.Access_Token_Secret, config_1.default.JWT_ACCESS_EXPIRE_IN);
     const result = { existingUser, token };

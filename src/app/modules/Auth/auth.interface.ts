@@ -6,5 +6,8 @@ export type TLogin = {
 export type tokenPayload = {
   email: string;
   role: string;
+  phone?: string;
   name?: string;
+  profileImage?: string;
+  address?: string;
 };

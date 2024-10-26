@@ -5,7 +5,7 @@ import { authServices } from "./auth.service";
 import AppError from "../../erros/AppError";
 
 const signUp = catchAsync(async (req, res) => {
-  const result = await authServices.signUpIntoDb(req.body);
+  const result = await authServices.signUpIntoDb({ ...req?.body, profileImage: req?.file?.path });
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

@@ -5,7 +5,6 @@ import { User } from "../User/user.model";
 import { TLogin, tokenPayload } from "./auth.interface";
 import { createToken } from "./auth.utils";
 import config from "../../config";
-import { AnyExpression, ObjectExpression } from "mongoose";
 
 const signUpIntoDb = async (payLoad: TUser) => {
   // check use already exist
@@ -13,9 +12,20 @@ const signUpIntoDb = async (payLoad: TUser) => {
   if (isUserExist) {
     throw new AppError(httpStatus.ALREADY_REPORTED, "User already Exist. Please login");
   }
-  const result = await User.create(payLoad);
 
-  return result;
+  const newUser = await User.create(payLoad);
+
+  const tokenPayload: tokenPayload = {
+    name: newUser?.name,
+    email: newUser?.email,
+    role: newUser?.role,
+    profileImage: newUser?.profileImage,
+    address: newUser?.address,
+    phone: newUser?.phone,
+  };
+
+  const token = createToken(tokenPayload, config.Access_Token_Secret as string, config.JWT_ACCESS_EXPIRE_IN as string);
+  return { newUser, token };
 };
 const loginDb = async (payLoad: TLogin) => {
   // check user exist
@@ -35,10 +45,12 @@ const loginDb = async (payLoad: TLogin) => {
     name: existingUser?.name,
     email: existingUser?.email,
     role: existingUser?.role,
+    profileImage: existingUser?.profileImage,
+    address: existingUser?.address,
+    phone: existingUser?.phone,
   };
 
   const token = createToken(tokenPayload, config.Access_Token_Secret as string, config.JWT_ACCESS_EXPIRE_IN as string);
-
   const result = { existingUser, token };
   return result;
 };

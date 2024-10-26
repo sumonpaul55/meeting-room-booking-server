@@ -5,18 +5,12 @@ import { authController } from "./auth.controller";
 import { authValidation } from "./auth.validation";
 import authGuared from "../../middileWare/authGuared";
 import { USER_ROLE } from "../User/user.constant";
-import bodyParser from "../../utils/bodyParese";
+import bodyParser from "../../middileWare/bodyParese";
 import { multerUpload } from "../../config/multer.config";
 
 const router = express.Router();
 
-router.post(
-  "/signup",
-  multerUpload.single("profileImage"),
-  bodyParser,
-  validateRequest(userValidations.createUserValidationSchma),
-  authController.signUp
-);
+router.post("/signup", multerUpload.single("image"), bodyParser, validateRequest(userValidations.createUserValidationSchma), authController.signUp);
 
 router.get("/users", authController.getOneUser);
 
